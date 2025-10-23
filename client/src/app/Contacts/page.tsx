@@ -88,10 +88,13 @@ const Contact = () => {
     setFormStatus({ type: null, message: '' });
 
     try {
-      const response = await fetch('/api/contact', {
+      // Using Formspree for form submission
+      // Replace 'your-form-id' with your actual Formspree form ID
+      const response = await fetch('https://formspree.io/f/myznqrjk', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify(formData),
       });
@@ -270,6 +273,10 @@ const Contact = () => {
                 )}
               </button>
             </form>
+
+            <div className="mt-4 text-center text-sm text-gray-500">
+              <p>Powered by <a href="https://formspree.io" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Formspree</a></p>
+            </div>
           </div>
         </div>
       </div>
