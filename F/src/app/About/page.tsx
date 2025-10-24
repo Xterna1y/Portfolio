@@ -35,34 +35,37 @@ const About = () => {
       title: 'Professional Experience',
       items: [
         {
-          title: 'Senior Frontend Developer',
-          company: 'Tech Company',
-          period: '2022 - Present',
-          description: 'Lead development of responsive web applications using React, TypeScript, and modern CSS frameworks.'
+          title: 'Contract Software Engineer',
+          company: 'Sensoft Technologies',
+          period: 'Nov 2024 - Jan 2025',
+          description: 'Mainly in charge of revamping web applications using React, TypeScript, and modern CSS frameworks.'
         },
         {
-          title: 'Full Stack Developer',
-          company: 'Digital Agency',
-          period: '2020 - 2022',
-          description: 'Developed and maintained multiple client projects using Node.js, React, and cloud services.'
+          title: 'IT Infrastructure Intern',
+          company: 'UOB KayHian Securities',
+          period: 'June 2024 - Aug 2024',
+          description: 'Tasked for troubleshooting and network set up'
         },
         {
-          title: 'Junior Developer',
-          company: 'Startup Inc',
-          period: '2019 - 2020',
-          description: 'Contributed to frontend development and learned modern web development practices.'
+          title: 'Indoor Rock Climbing Instructor',
+          company: 'HangOut Climbing Gym',
+          period: '2019 - 2024',
+          description: 'Worked as store-in-charge as well as instructor'
         }
       ]
     },
     skills: {
       title: 'Technical Expertise',
       items: [
-        { name: 'React/Next.js', level: 90 },
-        { name: 'TypeScript', level: 85 },
-        { name: 'Node.js/Express', level: 80 },
-        { name: 'Tailwind CSS', level: 88 },
-        { name: 'Python/Django', level: 75 },
-        { name: 'Database Design', level: 82 }
+        { name: 'React/Next.js', level: 70 },
+        { name: 'TypeScript', level: 70 },
+        { name: 'Node.js/Express', level: 40 },
+        { name: 'Tailwind CSS', level: 70 },
+        { name: 'Python', level: 70 },
+        { name: 'Database Design', level: 80 },
+        { name: 'C', level: 80 },
+        { name: 'HTML', level: 80 },
+        { name: 'Arduino', level: 80 },
       ]
     },
     goals: {
@@ -78,11 +81,11 @@ const About = () => {
     achievements: {
       title: 'Key Achievements',
       items: [
-        'Led a team that reduced page load time by 60%',
-        'Increased user engagement by 40% through UX improvements',
-        'Successfully launched 5+ production applications',
-        'Reduced bugs by 50% through testing implementation',
-        'Mentored 10+ junior developers'
+        'Led a team that planned for college Prom Night',
+        'Made a Smart Home System simulation',
+        'Made a Smart Irrigation System simulation',
+        'Made a Smart Intruder Detection System simulation',
+        'For my diploma FYP made a Smart Vehicle Entry System with Facial Recogition and License Plate Recognition'
       ]
     }
   };
@@ -96,8 +99,8 @@ const About = () => {
             About Me
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            I'm a passionate developer with a love for creating elegant solutions to complex problems.
-            Here's more about my journey and expertise.
+           I am an aspiring software engineer with strong academic acheivements, international exposure and diverse extracurricular leadership experience.
+           Seekig to leverage my technical skills and cross-cultural background to grow in dynamic and innovative environment and looking to improve upon my current self.
           </p>
         </div>
 
@@ -107,7 +110,7 @@ const About = () => {
             <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl">
               <h3 className="text-2xl font-bold text-gray-900 mb-4">My Story</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                I started my journey in web development over 5 years ago, driven by curiosity about how things work on the internet. 
+                I started my journey in web development over 4 years ago, driven by curiosity about how things work on the internet. 
                 What began as a hobby quickly turned into a passion as I discovered the power of code to create meaningful experiences.
               </p>
               <p className="text-gray-700 leading-relaxed">

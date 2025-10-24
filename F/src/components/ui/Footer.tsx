@@ -18,10 +18,9 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Github, href: 'https://github.com/yourusername', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com/in/yourusername', label: 'LinkedIn' },
-    { icon: Twitter, href: 'https://twitter.com/yourusername', label: 'Twitter' },
-    { icon: Mail, href: 'mailto:your.email@example.com', label: 'Email' },
+    { icon: Github, href: 'https://github.com/Xterna1y', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/ming-reo-tan-a8178b20a/', label: 'LinkedIn' },
+    { icon: Mail, href: 'mailto:tmreo123@gmail.com', label: 'Email' },
   ];
 
   const quickLinks = [
@@ -40,7 +39,7 @@ const Footer = () => {
             <div className="space-y-4">
               <h3 className="text-2xl font-bold">Your Name</h3>
               <p className="text-gray-400 leading-relaxed">
-                Full Stack Developer passionate about creating beautiful and functional web applications.
+                Aspiring Software Engineer looking to improve my technical skills
               </p>
               <div className="flex space-x-4">
                 {socialLinks.map((link) => {

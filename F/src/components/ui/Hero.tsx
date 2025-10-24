@@ -7,8 +7,9 @@ const Hero = () => {
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
 
-  const roles = ['Full Stack Developer', 'UI/UX Designer', 'Problem Solver'];
-  
+  // Personalized roles based on your actual experience
+  const roles = ['Software Engineer', 'IoT Developer', 'Problem Solver'];
+
   useEffect(() => {
     const handleType = () => {
       const i = loopNum % roles.length;
@@ -31,20 +32,20 @@ const Hero = () => {
   }, [text, isDeleting, loopNum, typingSpeed]);
 
   const socialLinks = [
-    { icon: Github, href: 'https://github.com/yourusername', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com/in/yourusername', label: 'LinkedIn' },
-    { icon: Mail, href: 'mailto:your.email@example.com', label: 'Email' },
+    { icon: Github, href: 'https://github.com/Xterna1y', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/ming-reo-tan-a8178b20a/', label: 'LinkedIn' },
+    { icon: Mail, href: 'mailto:tmreo123@gmail.com', label: 'Email' },
   ];
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 opacity-90"></div>
-      
+
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="space-y-8">
           <div className="space-y-4">
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900">
-              Hi, I'm <span className="text-blue-600">Your Name</span>
+              Hi, I'm <span className="text-blue-600">Tan Ming Reo</span>
             </h1>
             <div className="text-2xl sm:text-3xl lg:text-4xl text-gray-700 h-12">
               <span className="border-r-2 border-blue-600 pr-2">{text}</span>
@@ -52,8 +53,10 @@ const Hero = () => {
           </div>
 
           <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Passionate about creating beautiful, functional web applications that solve real-world problems. 
-            Specializing in modern JavaScript frameworks and responsive design.
+            I’m an aspiring <strong>Software Engineer</strong> with hands-on experience in 
+            <strong> full-stack web development</strong> and <strong>IoT systems</strong>.  
+            With international exposure and a passion for innovation, I aim to create
+            impactful solutions that bridge technology and real-world usability.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -64,7 +67,7 @@ const Hero = () => {
               Get In Touch
             </a>
             <a
-              href="/resume.pdf"
+              href="/Reo_Resume.pdf"
               download
               className="border-2 border-gray-300 text-gray-700 px-8 py-3 rounded-full font-medium hover:border-blue-600 hover:text-blue-600 transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
             >

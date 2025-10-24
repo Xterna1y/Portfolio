@@ -1,66 +1,57 @@
 import { useState } from 'react';
-import { Code, Database, Palette, Server, Smartphone, Globe } from 'lucide-react';
+import { Code, Cpu, Database, Network, Languages, Globe } from 'lucide-react';
 
 const Skills = () => {
-  const [activeCategory, setActiveCategory] = useState('frontend');
+  const [activeCategory, setActiveCategory] = useState('programming');
 
   const categories = [
-    { id: 'frontend', label: 'Frontend', icon: Code },
-    { id: 'backend', label: 'Backend', icon: Server },
+    { id: 'programming', label: 'Programming', icon: Code },
+    { id: 'iot', label: 'IoT & Embedded Systems', icon: Cpu },
+    { id: 'frontend', label: 'Frontend', icon: Globe },
     { id: 'database', label: 'Database', icon: Database },
-    { id: 'design', label: 'Design', icon: Palette },
-    { id: 'mobile', label: 'Mobile', icon: Smartphone },
-    { id: 'tools', label: 'Tools', icon: Globe },
+    { id: 'languages', label: 'Languages', icon: Languages },
+    { id: 'softskills', label: 'Soft Skills', icon: Network },
   ];
 
   const skills = {
-    frontend: [
-      { name: 'React.js', level: 90, description: 'Expert in React hooks, context, and modern patterns' },
-      { name: 'TypeScript', level: 85, description: 'Strong typing and interface design' },
-      { name: 'Next.js', level: 80, description: 'SSR, SSG, and API routes' },
-      { name: 'Tailwind CSS', level: 88, description: 'Utility-first CSS framework' },
-      { name: 'Vue.js', level: 75, description: 'Component-based development' },
-      { name: 'JavaScript ES6+', level: 92, description: 'Modern JavaScript features' },
+    programming: [
+      { name: 'C', level: 90, description: 'Advanced — core focus in logic, memory, and algorithms' },
+      { name: 'Python', level: 80, description: 'Intermediate — scripting, automation, and data handling' },
+      { name: 'React', level: 75, description: 'Intermediate — component design and state management' },
+      { name: 'Arduino', level: 80, description: 'Intermediate — IoT device programming and prototyping' },
+      { name: 'Kotlin', level: 60, description: 'Beginner — Android app fundamentals' },
+      { name: 'SQL', level: 65, description: 'Basic — query design and relational structure' },
     ],
-    backend: [
-      { name: 'Node.js', level: 85, description: 'Express, Koa, and RESTful APIs' },
-      { name: 'Python', level: 80, description: 'Django, Flask, and FastAPI' },
-      { name: 'Java', level: 70, description: 'Spring Boot and microservices' },
-      { name: 'PHP', level: 65, description: 'Laravel and modern PHP' },
-      { name: 'GraphQL', level: 75, description: 'API design and implementation' },
-      { name: 'REST APIs', level: 90, description: 'RESTful service design' },
+    iot: [
+      { name: 'Smart Home System', level: 85, description: 'IoT system integrating sensors and automation' },
+      { name: 'Smart Intruder System', level: 80, description: 'Security-based IoT alarm system' },
+      { name: 'Smart Irrigation System', level: 78, description: 'Automated watering system using sensors' },
+      { name: 'Smart Fire Alarm System', level: 82, description: 'Real-time detection and alert system' },
+      { name: 'ATM Simulator', level: 70, description: 'Simulation system for transaction logic' },
+    ],
+    frontend: [
+      { name: 'HTML', level: 90, description: 'Advanced — semantic structure and accessibility' },
+      { name: 'CSS', level: 70, description: 'Beginner — layout design and styling' },
+      { name: 'JavaScript', level: 75, description: 'Intermediate — DOM manipulation and interactivity' },
+      { name: 'React.js', level: 75, description: 'Intermediate — functional components and hooks' },
     ],
     database: [
-      { name: 'PostgreSQL', level: 85, description: 'Complex queries and optimization' },
-      { name: 'MongoDB', level: 80, description: 'NoSQL and document databases' },
-      { name: 'MySQL', level: 82, description: 'Relational database design' },
-      { name: 'Redis', level: 75, description: 'Caching and session management' },
-      { name: 'Firebase', level: 78, description: 'Real-time database and auth' },
-      { name: 'Prisma', level: 83, description: 'Modern database toolkit' },
+      { name: 'SQL', level: 65, description: 'Basic database design and queries' },
+      { name: 'Firebase', level: 60, description: 'Basic cloud-based storage and authentication' },
     ],
-    design: [
-      { name: 'Figma', level: 85, description: 'UI/UX design and prototyping' },
-      { name: 'Adobe XD', level: 75, description: 'Interactive design and wireframing' },
-      { name: 'Sketch', level: 70, description: 'Digital design platform' },
-      { name: 'Photoshop', level: 80, description: 'Image editing and manipulation' },
-      { name: 'Illustrator', level: 72, description: 'Vector graphics and icons' },
-      { name: 'Responsive Design', level: 90, description: 'Mobile-first design principles' },
+    languages: [
+      { name: 'English', level: 100, description: 'Fluent' },
+      { name: 'Bahasa Melayu', level: 100, description: 'Fluent' },
+      { name: 'Mandarin', level: 100, description: 'Fluent' },
+      { name: 'Japanese', level: 60, description: 'Basic' },
+      { name: 'French', level: 40, description: 'Beginner' },
     ],
-    mobile: [
-      { name: 'React Native', level: 80, description: 'Cross-platform mobile development' },
-      { name: 'Flutter', level: 70, description: 'Google\'s UI toolkit' },
-      { name: 'Swift', level: 65, description: 'iOS native development' },
-      { name: 'Kotlin', level: 60, description: 'Android native development' },
-      { name: 'Progressive Web Apps', level: 85, description: 'PWA development and deployment' },
-      { name: 'Mobile UI/UX', level: 82, description: 'Mobile-first design patterns' },
-    ],
-    tools: [
-      { name: 'Git/GitHub', level: 90, description: 'Version control and collaboration' },
-      { name: 'Docker', level: 75, description: 'Containerization and deployment' },
-      { name: 'AWS', level: 78, description: 'Cloud services and deployment' },
-      { name: 'CI/CD', level: 82, description: 'Continuous integration and deployment' },
-      { name: 'Webpack/Vite', level: 85, description: 'Build tools and bundling' },
-      { name: 'Testing', level: 80, description: 'Jest, Cypress, and testing strategies' },
+    softskills: [
+      { name: 'Leadership', level: 85, description: 'Led extracurricular and academic projects effectively' },
+      { name: 'Adaptability', level: 90, description: 'Thrived across multicultural environments (Malaysia, Japan)' },
+      { name: 'Team Collaboration', level: 88, description: 'Worked cross-functionally in software projects' },
+      { name: 'Problem Solving', level: 92, description: 'Analytical and creative approach to challenges' },
+      { name: 'Communication', level: 95, description: 'Multilingual with excellent technical articulation' },
     ],
   };
 
@@ -77,11 +68,9 @@ const Skills = () => {
     <section id="skills" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            Technical Skills
-          </h2>
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Technical & Professional Skills</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comprehensive skill set covering modern web development technologies and tools.
+            A blend of software engineering, IoT innovation, and multilingual communication expertise.
           </p>
         </div>
 
@@ -118,7 +107,6 @@ const Skills = () => {
                 </div>
                 <div className="text-2xl font-bold text-blue-600">{skill.level}%</div>
               </div>
-              
               <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                 <div
                   className={`h-3 rounded-full transition-all duration-1000 ease-out ${getLevelColor(skill.level)}`}
@@ -132,25 +120,25 @@ const Skills = () => {
         <div className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold mb-2">50+</div>
-              <div className="text-blue-100">Technologies Learned</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">100+</div>
+              <div className="text-4xl font-bold mb-2">8+</div>
               <div className="text-blue-100">Projects Completed</div>
             </div>
             <div>
-              <div className="text-4xl font-bold mb-2">5+</div>
-              <div className="text-blue-100">Years Experience</div>
+              <div className="text-4xl font-bold mb-2">4+</div>
+              <div className="text-blue-100">Years of Technical Learning</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold mb-2">3</div>
+              <div className="text-blue-100">Professional Roles</div>
             </div>
           </div>
-          
+
           <div className="mt-8 text-center">
             <p className="text-lg text-blue-100 mb-4">
-              Always learning and staying updated with the latest technologies and best practices.
+              Continuously growing through hands-on projects and global collaboration.
             </p>
             <div className="flex flex-wrap justify-center gap-2">
-              {['Fast Learner', 'Problem Solver', 'Team Player', 'Detail Oriented', 'Creative Thinker'].map((trait) => (
+              {['Adaptable', 'Multilingual', 'Analytical Thinker', 'Collaborative', 'Innovative'].map((trait) => (
                 <span
                   key={trait}
                   className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium"
