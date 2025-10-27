@@ -28,19 +28,19 @@ const Contact = () => {
     {
       icon: Mail,
       label: 'Email',
-      value: 'your.email@example.com',
-      href: 'mailto:your.email@example.com'
+      value: 'tmreo123@gmail.com',
+      href: 'mailto:tmreo123@gmail.com'
     },
     {
       icon: Phone,
       label: 'Phone',
-      value: '+1 (555) 123-4567',
-      href: 'tel:+15551234567'
+      value: '+60 12-802-5770',
+      href: 'tel:+60128025770'
     },
     {
       icon: MapPin,
       label: 'Location',
-      value: 'San Francisco, CA',
+      value: 'Selangor, Malaysia',
       href: '#'
     }
   ];

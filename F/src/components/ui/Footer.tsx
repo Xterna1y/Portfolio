@@ -37,7 +37,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
-              <h3 className="text-2xl font-bold">Your Name</h3>
+              <h3 className="text-2xl font-bold">Tan Ming Reo</h3>
               <p className="text-gray-400 leading-relaxed">
                 Aspiring Software Engineer looking to improve my technical skills
               </p>
@@ -90,9 +90,9 @@ const Footer = () => {
             <div>
               <h4 className="text-lg font-semibold mb-4">Contact</h4>
               <div className="space-y-2 text-gray-400">
-                <p>your.email@example.com</p>
-                <p>+1 (555) 123-4567</p>
-                <p>San Francisco, CA</p>
+                <p>tmreo123@gmail.com</p>
+                <p>+60 12-802-5770</p>
+                <p>Selangor, Malaysia</p>
               </div>
             </div>
           </div>
@@ -100,7 +100,7 @@ const Footer = () => {
           <div className="border-t border-gray-800 mt-8 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-400 text-sm">
-                © {new Date().getFullYear()} Your Name. All rights reserved.
+                © {new Date().getFullYear()} Tan Ming Reo. All rights reserved.
               </p>
               <div className="flex space-x-6 mt-4 md:mt-0">
                 <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">
