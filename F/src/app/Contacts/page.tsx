@@ -1,80 +1,59 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-react';
-
-interface FormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
-
-interface FormStatus {
-  type: 'success' | 'error' | null;
-  message: string;
-}
+import { Mail, Phone, MapPin, Send, Loader, CheckCircle } from 'lucide-react';
 
 const Contact = () => {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
-    message: ''
+    message: '',
   });
-  
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formStatus, setFormStatus] = useState<FormStatus>({ type: null, message: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const contactInfo = [
     {
       icon: Mail,
       label: 'Email',
-      value: 'tmreo123@gmail.com',
-      href: 'mailto:tmreo123@gmail.com'
+      value: 'reo@example.com',
+      href: 'mailto:reo@example.com',
     },
     {
       icon: Phone,
       label: 'Phone',
-      value: '+60 12-802-5770',
-      href: 'tel:+60128025770'
+      value: '+1 (555) 123-4567',
+      href: 'tel:+15551234567',
     },
     {
       icon: MapPin,
       label: 'Location',
-      value: 'Selangor, Malaysia',
-      href: '#'
-    }
+      value: 'San Francisco, CA',
+      href: '#',
+    },
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const validateForm = (): boolean => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    
     if (!formData.name.trim()) {
-      setFormStatus({ type: 'error', message: 'Please enter your name' });
-      return false;
+      newErrors.name = 'Name is required';
     }
     if (!formData.email.trim()) {
-      setFormStatus({ type: 'error', message: 'Please enter your email' });
-      return false;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setFormStatus({ type: 'error', message: 'Please enter a valid email address' });
-      return false;
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Email is invalid';
     }
     if (!formData.subject.trim()) {
-      setFormStatus({ type: 'error', message: 'Please enter a subject' });
-      return false;
+      newErrors.subject = 'Subject is required';
     }
     if (!formData.message.trim()) {
-      setFormStatus({ type: 'error', message: 'Please enter your message' });
-      return false;
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
     }
-    return true;
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -84,39 +63,38 @@ const Contact = () => {
       return;
     }
 
-    setIsSubmitting(true);
-    setFormStatus({ type: null, message: '' });
-
+    setStatus('loading');
+    
     try {
-      // Using Formspree for form submission
-      // Replace 'your-form-id' with your actual Formspree form ID
-      const response = await fetch('https://formspree.io/f/myznqrjk', {
+      const response = await fetch('https://formspree.io/f/reo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
         },
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
       if (response.ok) {
-        setFormStatus({ 
-          type: 'success', 
-          message: 'Thank you for your message! I\'ll get back to you soon.' 
-        });
+        setStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
+        setErrors({});
       } else {
-        throw new Error(data.message || 'Something went wrong');
+        throw new Error('Form submission failed');
       }
     } catch (error) {
-      setFormStatus({ 
-        type: 'error', 
-        message: error instanceof Error ? error.message : 'Failed to send message. Please try again.' 
-      });
-    } finally {
-      setIsSubmitting(false);
+      setStatus('error');
+      console.error('Form submission error:', error);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -133,6 +111,7 @@ const Contact = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12">
+          {/* Contact Information */}
           <div className="space-y-8">
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Let's Connect</h3>
@@ -174,6 +153,7 @@ const Contact = () => {
             </div>
           </div>
 
+          {/* Contact Form */}
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -185,11 +165,15 @@ const Contact = () => {
                   id="name"
                   name="name"
                   value={formData.name}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all duration-200"
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all duration-200 ${
+                    errors.name ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   placeholder="Your Name"
-                  disabled={isSubmitting}
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                )}
               </div>
 
               <div>
@@ -201,11 +185,15 @@ const Contact = () => {
                   id="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all duration-200"
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all duration-200 ${
+                    errors.email ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   placeholder="your.email@example.com"
-                  disabled={isSubmitting}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               <div>
@@ -217,11 +205,15 @@ const Contact = () => {
                   id="subject"
                   name="subject"
                   value={formData.subject}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all duration-200"
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all duration-200 ${
+                    errors.subject ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   placeholder="Project Inquiry"
-                  disabled={isSubmitting}
                 />
+                {errors.subject && (
+                  <p className="text-red-500 text-sm mt-1">{errors.subject}</p>
+                )}
               </div>
 
               <div>
@@ -232,37 +224,39 @@ const Contact = () => {
                   id="message"
                   name="message"
                   value={formData.message}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   rows={5}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all duration-200 resize-none"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all duration-200 resize-none ${
+                    errors.message ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   placeholder="Tell me about your project..."
-                  disabled={isSubmitting}
                 />
+                {errors.message && (
+                  <p className="text-red-500 text-sm mt-1">{errors.message}</p>
+                )}
               </div>
 
-              {formStatus.type && (
-                <div className={`flex items-center gap-3 p-4 rounded-lg ${
-                  formStatus.type === 'success' 
-                    ? 'bg-green-50 text-green-700' 
-                    : 'bg-red-50 text-red-700'
-                }`}>
-                  {formStatus.type === 'success' ? (
-                    <CheckCircle size={20} />
-                  ) : (
-                    <AlertCircle size={20} />
-                  )}
-                  <span className="text-sm font-medium">{formStatus.message}</span>
+              {status === 'success' && (
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-green-50 text-green-700">
+                  <CheckCircle size={20} />
+                  <span className="text-sm font-medium">Message sent successfully! I'll get back to you soon.</span>
+                </div>
+              )}
+
+              {status === 'error' && (
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-red-50 text-red-700">
+                  <span className="text-sm font-medium">Failed to send message. Please try again or email me directly.</span>
                 </div>
               )}
 
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={status === 'loading'}
                 className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
               >
-                {isSubmitting ? (
+                {status === 'loading' ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <Loader size={20} className="animate-spin" />
                     Sending...
                   </>
                 ) : (
@@ -274,9 +268,17 @@ const Contact = () => {
               </button>
             </form>
 
-            <div className="mt-4 text-center text-sm text-gray-500">
-              <p>Powered by <a href="https://formspree.io" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Formspree</a></p>
-            </div>
+            <p className="mt-4 text-center text-sm text-gray-500">
+              Powered by{' '}
+              <a 
+                href="https://formspree.io" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                Formspree
+              </a>
+            </p>
           </div>
         </div>
       </div>

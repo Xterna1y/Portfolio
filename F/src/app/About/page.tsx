@@ -1,96 +1,57 @@
 import { useState } from 'react';
-import { User, Code, Target, Award } from 'lucide-react';
+import { User, Award, Target, Code, Briefcase } from 'lucide-react';
 
-// ------------------ TYPES ------------------
-type ExperienceItem = {
-  title: string;
-  company: string;
-  period: string;
-  description: string;
-};
-
-type SkillItem = {
-  name: string;
-  level: number;
-};
-
-type TabContentType =
-  | { title: string; items: ExperienceItem[] }
-  | { title: string; items: SkillItem[] }
-  | { title: string; items: string[] };
-
-// ------------------ COMPONENT ------------------
 const About = () => {
-  const [activeTab, setActiveTab] = useState<'experience' | 'skills' | 'goals' | 'achievements'>('experience');
+  const [activeTab, setActiveTab] = useState('story');
 
-  const tabs = [
-    { id: 'experience', label: 'Experience', icon: User },
-    { id: 'skills', label: 'Core Skills', icon: Code },
-    { id: 'goals', label: 'Goals', icon: Target },
-    { id: 'achievements', label: 'Achievements', icon: Award },
-  ];
-
-  const tabContent: Record<'experience' | 'skills' | 'goals' | 'achievements', TabContentType> = {
-    experience: {
-      title: 'Professional Experience',
-      items: [
-        {
-          title: 'Contract Software Engineer',
-          company: 'Sensoft Technologies',
-          period: 'Nov 2024 - Jan 2025',
-          description: 'Mainly in charge of revamping web applications using React, TypeScript, and modern CSS frameworks.'
-        },
-        {
-          title: 'IT Infrastructure Intern',
-          company: 'UOB KayHian Securities',
-          period: 'June 2024 - Aug 2024',
-          description: 'Tasked for troubleshooting and network set up'
-        },
-        {
-          title: 'Indoor Rock Climbing Instructor',
-          company: 'HangOut Climbing Gym',
-          period: '2019 - 2024',
-          description: 'Worked as store-in-charge as well as instructor'
-        }
-      ]
-    },
-    skills: {
-      title: 'Technical Expertise',
-      items: [
-        { name: 'React/Next.js', level: 70 },
-        { name: 'TypeScript', level: 70 },
-        { name: 'Node.js/Express', level: 40 },
-        { name: 'Tailwind CSS', level: 70 },
-        { name: 'Python', level: 70 },
-        { name: 'Database Design', level: 80 },
-        { name: 'C', level: 80 },
-        { name: 'HTML', level: 80 },
-        { name: 'Arduino', level: 80 },
-      ]
-    },
-    goals: {
-      title: 'Career Goals',
-      items: [
-        'Become a technical lead at a product-focused company',
-        'Contribute to open-source projects regularly',
-        'Mentor junior developers and share knowledge',
-        'Build products that impact millions of users',
-        'Stay current with emerging technologies'
-      ]
-    },
-    achievements: {
-      title: 'Key Achievements',
-      items: [
-        'Led a team that planned for college Prom Night',
-        'Made a Smart Home System simulation',
-        'Made a Smart Irrigation System simulation',
-        'Made a Smart Intruder Detection System simulation',
-        'For my diploma FYP made a Smart Vehicle Entry System with Facial Recogition and License Plate Recognition'
-      ]
-    }
+  const skills = {
+    frontend: [
+      { name: 'React', level: 90 },
+      { name: 'TypeScript', level: 85 },
+      { name: 'Tailwind CSS', level: 80 },
+      { name: 'Vue.js', level: 70 },
+    ],
+    backend: [
+      { name: 'Node.js', level: 85 },
+      { name: 'Python', level: 80 },
+      { name: 'PostgreSQL', level: 75 },
+      { name: 'MongoDB', level: 70 },
+    ],
+    tools: [
+      { name: 'Git', level: 90 },
+      { name: 'Docker', level: 75 },
+      { name: 'AWS', level: 70 },
+      { name: 'Vite', level: 85 },
+    ],
   };
 
-  // ------------------ RENDER ------------------
+  const experience = [
+    {
+      title: 'Senior Full Stack Developer',
+      company: 'Tech Innovations Inc',
+      period: '2021 - Present',
+      description: 'Leading development of enterprise web applications with React, Node.js, and cloud technologies.',
+    },
+    {
+      title: 'Full Stack Developer',
+      company: 'Digital Solutions Agency',
+      period: '2019 - 2021',
+      description: 'Built responsive websites and web applications for various clients using modern JavaScript frameworks.',
+    },
+    {
+      title: 'Frontend Developer',
+      company: 'Creative Studio',
+      period: '2017 - 2019',
+      description: 'Specialized in React development and UI/UX design for startup projects.',
+    },
+  ];
+
+  const tabs = [
+    { id: 'story', label: 'My Story', icon: User },
+    { id: 'skills', label: 'Skills', icon: Award },
+    { id: 'experience', label: 'Experience', icon: Briefcase },
+  ];
+
   return (
     <section id="about" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,106 +60,125 @@ const About = () => {
             About Me
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-           I am an aspiring software engineer with strong academic acheivements, international exposure and diverse extracurricular leadership experience.
-           Seekig to leverage my technical skills and cross-cultural background to grow in dynamic and innovative environment and looking to improve upon my current self.
+            Passionate developer with expertise in modern web technologies
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* LEFT SECTION */}
-          <div className="space-y-6">
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">My Story</h3>
-              <p className="text-gray-700 leading-relaxed mb-4">
-                I started my journey in web development over 4 years ago, driven by curiosity about how things work on the internet. 
-                What began as a hobby quickly turned into a passion as I discovered the power of code to create meaningful experiences.
-              </p>
-              <p className="text-gray-700 leading-relaxed">
-                Today, I specialize in building scalable, user-friendly applications that solve real-world problems. 
-                I believe in writing clean, maintainable code and creating interfaces that delight users.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-blue-50 p-6 rounded-xl text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">5+</div>
-                <div className="text-gray-700">Years Experience</div>
-              </div>
-              <div className="bg-purple-50 p-6 rounded-xl text-center">
-                <div className="text-3xl font-bold text-purple-600 mb-2">50+</div>
-                <div className="text-gray-700">Projects Completed</div>
-              </div>
-            </div>
+        {/* Tabs */}
+        <div className="flex justify-center mb-12">
+          <div className="inline-flex rounded-lg bg-gray-100 p-1">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    activeTab === tab.id
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  <Icon size={18} />
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
+        </div>
 
-          {/* RIGHT SECTION */}
-          <div>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                      activeTab === tab.id
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    <Icon size={18} />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* TAB CONTENT */}
-            <div className="bg-gray-50 p-6 rounded-2xl">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">
-                {tabContent[activeTab].title}
-              </h3>
-
-              {activeTab === 'skills' ? (
-                // Skills progress bars
-                <div className="space-y-4">
-                  {(tabContent.skills.items as SkillItem[]).map((skill, index) => (
-                    <div key={index}>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-gray-700 font-medium">{skill.name}</span>
-                        <span className="text-gray-600">{skill.level}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${skill.level}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
+        {/* Tab Content */}
+        <div className="bg-gray-50 p-6 rounded-2xl">
+          {activeTab === 'story' && (
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">My Journey</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-blue-50 p-6 rounded-xl text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">4+</div>
+                  <div className="text-gray-700">Years Experience</div>
                 </div>
-              ) : (
-                // Other tabs (experience, goals, achievements)
-                <div className="space-y-4">
-                  {(tabContent[activeTab].items as (ExperienceItem | string)[]).map((item, index) => (
-                    <div key={index} className="border-l-4 border-blue-600 pl-4">
-                      {typeof item === 'string' ? (
-                        <p className="text-gray-700">{item}</p>
-                      ) : (
-                        <div>
-                          <h4 className="font-bold text-gray-900">{item.title}</h4>
-                          <p className="text-blue-600 font-medium">
-                            {item.company} • {item.period}
-                          </p>
-                          <p className="text-gray-700 mt-1">{item.description}</p>
+                <div className="bg-blue-50 p-6 rounded-xl text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">25+</div>
+                  <div className="text-gray-700">Projects Completed</div>
+                </div>
+                <div className="bg-blue-50 p-6 rounded-xl text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">20+</div>
+                  <div className="text-gray-700">Happy Clients</div>
+                </div>
+                <div className="bg-blue-50 p-6 rounded-xl text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">12+</div>
+                  <div className="text-gray-700">Technologies</div>
+                </div>
+              </div>
+              
+              <div className="mt-8">
+                <h4 className="text-lg font-bold text-gray-900 mb-4">What I Do</h4>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="flex items-start gap-3">
+                    <Code className="text-blue-600 mt-1" size={20} />
+                    <div>
+                      <div className="font-bold text-gray-900">Frontend Development</div>
+                      <div className="text-gray-600 text-sm">Creating beautiful, responsive user interfaces</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Target className="text-blue-600 mt-1" size={20} />
+                    <div>
+                      <div className="font-bold text-gray-900">Backend Development</div>
+                      <div className="text-gray-600 text-sm">Building robust server-side applications</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'skills' && (
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Technical Skills</h3>
+              <div className="grid md:grid-cols-2 gap-8">
+                {Object.entries(skills).map(([category, skillList]) => (
+                  <div key={category}>
+                    <h4 className="text-lg font-bold text-gray-900 mb-4 capitalize">
+                      {category}
+                    </h4>
+                    <div className="space-y-3">
+                      {skillList.map((skill) => (
+                        <div key={skill.name}>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-gray-700 font-medium">{skill.name}</span>
+                            <span className="text-blue-600 font-bold">{skill.level}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${skill.level}%` }}
+                            ></div>
+                          </div>
                         </div>
-                      )}
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {activeTab === 'experience' && (
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Work Experience</h3>
+              <div className="space-y-6">
+                {experience.map((job, index) => (
+                  <div key={index} className="border-l-4 border-blue-600 pl-4">
+                    <div className="font-bold text-gray-900">{job.title}</div>
+                    <div className="text-blue-600 font-medium">{job.company}</div>
+                    <div className="text-blue-600 font-medium">{job.period}</div>
+                    <div className="text-gray-700 mt-1">{job.description}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
