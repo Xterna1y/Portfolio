@@ -1,0 +1,113 @@
+:root{
+  --header-height: 72px; /* adjust if you want a taller header */
+  --header-bg: rgba(255,255,255,0.75);
+  --header-blur: 8px;
+  --accent: #0f1720;
+}
+
+/* Make sure header sits on top */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  z-index: 1000; /* high so it sits above hero */
+  background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.78));
+  backdrop-filter: blur(var(--header-blur));
+  border-bottom: 1px solid rgba(15,23,36,0.04);
+  box-shadow: 0 6px 20px rgba(2,6,23,0.03);
+}
+
+/* inner container limits width and centers */
+.site-header__inner {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* logo - do not style the word 'Reo' elsewhere if you asked not to */
+.site-logo {
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+/* navigation list (desktop) */
+.site-nav__list {
+  list-style: none;
+  display: flex;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.site-nav__link {
+  color: #28303a;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 6px;
+  transition: color .15s ease, transform .12s ease;
+}
+.site-nav__link:hover,
+.site-nav__link:focus {
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* Hamburger for small screens */
+.site-hamburger {
+  display: none; /* hidden on desktop */
+  width: 42px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.site-hamburger span {
+  display: block;
+  height: 3px;
+  border-radius: 3px;
+  background: #374151;
+}
+
+/* MOBILE: collapse nav -> show hamburger */
+@media (max-width: 880px) {
+  .site-nav__list {
+    display: none;
+  }
+  .site-hamburger {
+    display: inline-flex;
+  }
+}
+
+/* SAFETY: ensure page content doesn't sit under the header */
+html, body, #root {
+  /* do not set this globally if you already set it elsewhere */
+}
+
+/* Add spacing to the top of the page main/hero so it sits below the fixed header.
+   You can either:
+   1) keep this rule and it will apply globally
+   2) OR add .page-content { padding-top: var(--header-height); } to your root layout
+*/
+.main-with-header {
+  padding-top: var(--header-height);
+}
+
+/* If you prefer to target the hero section specifically:
+   #home { padding-top: var(--header-height); } 
+   (But prefer using a layout wrapper so internal anchors still scroll correctly.)
+*/
