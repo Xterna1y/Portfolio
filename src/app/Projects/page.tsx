@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { ExternalLink, Github, Filter } from "lucide-react";
+import { motion } from "framer-motion";
+import { containerStagger, fadeInUp, cardLift } from "../../lib/motionVariants";
+import { useScrollReveal } from "../../lib/useScrollReveal";
 import "./projects.css";
 
 type Category = "all" | "frontend" | "backend" | "fullstack" | "mobile";
@@ -8,7 +11,6 @@ type Project = {
   id: number;
   title: string;
   description: string;
-  image?: string;
   technologies: string[];
   liveUrl?: string;
   githubUrl?: string;
@@ -19,7 +21,6 @@ type Project = {
 const Projects: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<Category>("all");
 
-  // Only the three projects you requested
   const allProjects: Project[] = [
     {
       id: 1,
@@ -54,9 +55,9 @@ const Projects: React.FC = () => {
   ];
 
   const categories: Category[] = ["all", "frontend", "backend", "fullstack", "mobile"];
+  const { ref: projectsRef, inView: projectsInView } = useScrollReveal<HTMLDivElement>({ rootMargin: "-120px", threshold: 0.05, once: true });
 
-  const filteredProjects =
-    activeFilter === "all" ? allProjects : allProjects.filter((p) => p.category === activeFilter);
+  const filteredProjects = activeFilter === "all" ? allProjects : allProjects.filter((p) => p.category === activeFilter);
 
   const renderEmptyCard = (filterKey: Category) => {
     const label =
@@ -71,7 +72,7 @@ const Projects: React.FC = () => {
         : "Projects";
 
     return (
-      <div className="project-card empty-card">
+      <div className="project-card empty-card" role="status" aria-live="polite">
         <div className="empty-inner">
           <div className="empty-icon">
             <Filter size={20} />
@@ -84,18 +85,17 @@ const Projects: React.FC = () => {
   };
 
   return (
-    <section id="projects" className="projects-section">
-      <div className="projects-inner">
+    <section id="projects" className="projects-section" ref={projectsRef}>
+      <motion.div className="projects-inner" variants={containerStagger} initial="hidden" animate={projectsInView ? "show" : "hidden"}>
         <header className="projects-header">
-          <h2 className="projects-title">Featured Projects</h2>
-          <p className="projects-sub">A selection of my recent work and personal projects</p>
+          <motion.h2 variants={fadeInUp} className="projects-title">Featured Projects</motion.h2>
+          <motion.p variants={fadeInUp} className="projects-sub">A selection of my recent work and personal projects</motion.p>
         </header>
 
-        {/* Featured area */}
-        <div className="featured-grid">
+        <motion.div className="featured-grid" variants={containerStagger}>
           {allProjects.filter((p) => p.featured).map((project) => (
-            <article key={project.id} className="featured-card">
-              <div className="featured-hero">
+            <motion.article key={project.id} className="featured-card" variants={fadeInUp} whileHover="hover" initial="rest" animate="rest" role="article">
+              <div className="featured-hero" aria-hidden>
                 <div className="featured-icon"><Filter size={48} /></div>
                 <div className="featured-badge">Featured</div>
               </div>
@@ -128,35 +128,36 @@ const Projects: React.FC = () => {
                   )}
                 </div>
               </div>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Filter buttons */}
-        <div className="filters-row">
+        <motion.div className="filters-row" variants={fadeInUp}>
           {categories.map((cat) => (
-            <button
+            <motion.button
               key={cat}
+              layout
               className={`filter-btn ${activeFilter === cat ? "active" : ""}`}
               onClick={() => setActiveFilter(cat)}
               aria-pressed={activeFilter === cat}
+              aria-label={`Filter ${cat}`}
+              whileTap={{ scale: 0.98 }}
             >
               <Filter size={14} />
               {cat === "all" ? "All Projects" : cat.charAt(0).toUpperCase() + cat.slice(1)}
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
 
-        {/* All projects grid */}
-        <div className="projects-grid">
+        <motion.div className="projects-grid" variants={containerStagger}>
           {filteredProjects.length === 0 ? (
-            <div className="grid-placeholder">
+            <motion.div variants={fadeInUp} className="grid-placeholder">
               {renderEmptyCard(activeFilter)}
-            </div>
+            </motion.div>
           ) : (
             filteredProjects.map((project) => (
-              <article key={project.id} className="project-card">
-                <div className="project-hero">
+              <motion.article key={project.id} className="project-card" variants={fadeInUp} whileHover={{ y: -6, scale: 1.01 }} role="article">
+                <div className="project-hero" aria-hidden>
                   <Filter size={32} />
                 </div>
 
@@ -170,7 +171,7 @@ const Projects: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="project-links">
+                  <div className="project-links" aria-hidden>
                     {project.liveUrl ? (
                       <a className="icon-btn" href={project.liveUrl} target="_blank" rel="noreferrer" aria-label={`Open ${project.title} live demo`}>
                         <ExternalLink size={14} />
@@ -188,11 +189,11 @@ const Projects: React.FC = () => {
                     )}
                   </div>
                 </div>
-              </article>
+              </motion.article>
             ))
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 };
