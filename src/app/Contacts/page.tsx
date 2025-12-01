@@ -43,7 +43,7 @@ const Contact: React.FC = () => {
       icon: MapPin,
       label: "Location",
       value:
-        "A-07-31, D'Latour, Jalan Taylors, Bandar Sunway, Pjs7, 47500 Subang Jaya, Selangor",
+        "D'Latour, Jalan Taylors, Bandar Sunway, Pjs7, 47500 Subang Jaya, Selangor",
       href: "#",
     },
   ];
