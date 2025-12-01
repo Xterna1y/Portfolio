@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
-import { User, BookOpen, Award, Briefcase, Code, Target } from "lucide-react";
-import "./about.css";
+import { User, BookOpen, Award, Briefcase } from "lucide-react";
+import "./about.css"; // your main about file (unchanged)
+import "./about-skills.css"; // new file with skill-specific styling
 
 type TabKey = "basic" | "coco" | "skills" | "exp";
 
@@ -9,7 +10,6 @@ const certs: Record<string, { title: string; url?: string }[]> = {
   "mckl-pac": [{ title: "PAC Committee — Certificate", url: "/certs/mckl_pac.jpg" }],
   "mckl-prom-cochair": [{ title: "Prom Night Co-chair — Certificate", url: "/certs/mckl_prom_cochair.jpg" }],
   "mckl-orientation-2022": [{ title: "Orientation Camp 2022 — Certificate", url: "/certs/mckl_orientation_2022.jpg" }],
-
   "taylors-orientation-leader": [{ title: "Orientation Leader — Certificate", url: "/certs/taylors_orientation_leader.jpg" }],
   "taylors-project-manager": [{ title: "Project Manager — Taylor's Explorer — Certificate", url: "/certs/taylors_project_manager.jpg" }],
   "taylors-tech-lead": [{ title: "Technical Team Lead — Agents Of Tech — Certificate", url: "/certs/taylors_tech_lead.jpg" }],
@@ -38,7 +38,6 @@ const About: React.FC = () => {
     { school: "ChinzeiGakuin High School, Nagasaki, Japan", degree: "Exchange Programme (Asia Kakehashi)", period: "Oct 2021 – Mar 2022" },
   ];
 
-  // role lists (as previously)
   const mcklRoles = [
     { id: "mckl-sports-president", label: "Sports Club President" },
     { id: "mckl-pac", label: "PAC Committee" },
@@ -50,9 +49,17 @@ const About: React.FC = () => {
     { id: "taylors-orientation-leader", label: "Orientation Leader" },
     { id: "taylors-project-manager", label: "Project Manager — Taylor's Explorer" },
     { id: "taylors-tech-lead", label: "Technical Team Lead — Agents Of Tech" },
-    // Optional placeholder slot — include a placeholder role if you have one,
-    // otherwise it will render an empty disabled cell (keeps 2x2 layout).
   ];
+
+  // helper to always produce 4 cells (2x2) per institution
+  type Cell = { id: string; label: string; empty?: boolean };
+  function makeFour(arr: { id: string; label: string }[]): Cell[] {
+    const cells: Cell[] = arr.slice(0, 4).map(x => ({ id: x.id, label: x.label }));
+    while (cells.length < 4) cells.push({ id: `placeholder-${cells.length}`, label: "", empty: true });
+    return cells;
+  }
+  const mcklCells = makeFour(mcklRoles);
+  const taylorsCells = makeFour(taylorsRoles);
 
   useEffect(() => {
     panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -64,38 +71,14 @@ const About: React.FC = () => {
     setModalTitle(roleLabel);
     setModalOpen(true);
   }
-
   function closeModal() {
     setModalOpen(false);
     setModalItems([]);
     setModalTitle("");
   }
 
-// define a small concrete type for grid cells
-type Cell = {
-  id: string;
-  label: string;
-  empty?: boolean;
-};
-
-// helper: ensure exactly 4 cells (2x2). Returns Cell[]
-function makeFour(arr: { id: string; label: string }[]): Cell[] {
-  const cells: Cell[] = arr.slice(0, 4).map((x) => ({ id: x.id, label: x.label, empty: false }));
-
-  while (cells.length < 4) {
-    const idx = cells.length;
-    cells.push({ id: `placeholder-${idx}`, label: "", empty: true });
-  }
-
-  return cells;
-}
-
-// usage
-const mcklCells: Cell[] = makeFour(mcklRoles);
-const taylorsCells: Cell[] = makeFour(taylorsRoles);
-
-
-  const skills = [
+  // Technical skills (no numeric percent shown in UI)
+  const technicalSkills = [
     { name: "React", level: 90 },
     { name: "TypeScript", level: 85 },
     { name: "Tailwind CSS", level: 80 },
@@ -110,26 +93,19 @@ const taylorsCells: Cell[] = makeFour(taylorsRoles);
     { name: "Vite", level: 85 },
   ];
 
-  const experience = [
-    {
-      title: "Contract Software Engineer",
-      company: "Sensoft Technologies",
-      period: "Nov 2024 – Jan 2025",
-      description: "Short-term contract focusing on software engineering tasks and project delivery.",
-    },
-    {
-      title: "IT Infrastructure Intern",
-      company: "UOB KayHian Securities (Penang)",
-      period: "Jun 2024 – Aug 2024",
-      description: "IT support and infrastructure tasks during internship.",
-    },
-    {
-      title: "Indoor Rock-Climbing Instructor (Part-time)",
-      company: "HangOut Climbing Gym",
-      period: "2019 – 2024",
-      description: "Coaching, safety and customer experience at the climbing gym.",
-    },
+  // Soft skills with percentages (these will show their numbers)
+  const softSkills = [
+    { name: "Leadership", level: 90 },
+    { name: "Project Management", level: 90 },
+    { name: "Teamwork", level: 90 },
+    { name: "Adaptability", level: 90 },
+    { name: "Communication", level: 80 },
+    { name: "Public Speaking", level: 70 },
+    { name: "Social Skills", level: 70 },
   ];
+
+  // subtab control inside Skills panel
+  const [skillSub, setSkillSub] = useState<"technical" | "soft">("technical");
 
   return (
     <section id="about" className="about-section">
@@ -149,9 +125,7 @@ const taylorsCells: Cell[] = makeFour(taylorsRoles);
         </div>
 
         <div ref={panelRef} className="panel">
-          {/* Basic, Skills, Exp sections omitted here for brevity — assume they are same as earlier implementation */}
           {active === "basic" && (
-            /* ... basic content ... */
             <div className="basic-grid">
               <div className="card contact-card">
                 <h3 className="card-title">Contact</h3>
@@ -199,104 +173,145 @@ const taylorsCells: Cell[] = makeFour(taylorsRoles);
             </div>
           )}
 
-          {/* Co-curricular: now renders a strict 2x2 per institution */}
           {active === "coco" && (
             <div>
               <h3 className="coco-heading">Co-curricular Activities</h3>
               <p className="muted">Click any role to view certificates</p>
 
               <div className="coco-2x2">
-                {/* MCKL: ALWAYS 4 cells (2x2) */}
                 <div className="coco-card">
                   <div className="coco-card-header">MCKL</div>
                   <div className="coco-grid">
-                    {mcklCells.map((cell, idx) => {
-                      if (cell.empty) {
-                        return (
-                          <div key={idx} className="coco-role-btn empty" aria-hidden>
-                            {/* placeholder */}
-                          </div>
-                        );
-                      }
-                      return (
-                        <button
-                          key={cell.id}
-                          className="coco-role-btn"
-                          onClick={() => openCerts(cell.id!, cell.label!)}
-                        >
+                    {mcklCells.map((cell, idx) =>
+                      cell.empty ? (
+                        <div key={idx} className="coco-role-btn empty" aria-hidden />
+                      ) : (
+                        <button key={cell.id} className="coco-role-btn" onClick={() => openCerts(cell.id, cell.label)}>
                           {cell.label}
                         </button>
-                      );
-                    })}
+                      )
+                    )}
                   </div>
                 </div>
 
-                {/* TAYLOR'S: ALWAYS 4 cells (2x2) */}
                 <div className="coco-card">
                   <div className="coco-card-header">Taylor's</div>
                   <div className="coco-grid">
-                    {taylorsCells.map((cell, idx) => {
-                      if (cell.empty) {
-                        return (
-                          <div key={idx} className="coco-role-btn empty" aria-hidden />
-                        );
-                      }
-                      return (
-                        <button
-                          key={cell.id}
-                          className="coco-role-btn"
-                          onClick={() => openCerts(cell.id!, cell.label!)}
-                        >
+                    {taylorsCells.map((cell, idx) =>
+                      cell.empty ? (
+                        <div key={idx} className="coco-role-btn empty" aria-hidden />
+                      ) : (
+                        <button key={cell.id} className="coco-role-btn" onClick={() => openCerts(cell.id, cell.label)}>
                           {cell.label}
                         </button>
-                      );
-                    })}
+                      )
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* SKILLS */}
           {active === "skills" && (
             <div>
-              <h3 className="panel-title">Technical Skills</h3>
-              <div className="skills-columns">
-                <div className="skills-column">
-                  <h4 className="skills-heading">Frontend</h4>
-                  {skills.slice(0, 4).map((s) => (
-                    <div key={s.name} className="skill-row">
-                      <div className="skill-meta">
-                        <span className="skill-name">{s.name}</span>
-                        <span className="skill-level">{s.level}%</span>
-                      </div>
-                      <div className="skill-bar"><div className="skill-fill" style={{ width: `${s.level}%` }} /></div>
-                    </div>
-                  ))}
-                </div>
+              <div className="skills-panel-header">
+                <h3 className="panel-title">Technical & Soft Skills</h3>
 
-                <div className="skills-column">
-                  <h4 className="skills-heading">Backend & Tools</h4>
-                  {skills.slice(4).map((s) => (
-                    <div key={s.name} className="skill-row">
-                      <div className="skill-meta">
-                        <span className="skill-name">{s.name}</span>
-                        <span className="skill-level">{s.level}%</span>
-                      </div>
-                      <div className="skill-bar"><div className="skill-fill" style={{ width: `${s.level}%` }} /></div>
-                    </div>
-                  ))}
+                <div className="skills-subtabs">
+                  <button className={`subtab ${skillSub === "technical" ? "active" : ""}`} onClick={() => setSkillSub("technical")}>Technical Skills</button>
+                  <button className={`subtab ${skillSub === "soft" ? "active" : ""}`} onClick={() => setSkillSub("soft")}>Soft Skills</button>
                 </div>
               </div>
+
+              {/* Technical skills view — NO numeric percentage displayed, only bars */}
+              {skillSub === "technical" && (
+                <div className="skills-grid-2col">
+                  <div className="skills-column">
+                    <h4 className="skills-heading">Frontend</h4>
+                    {technicalSkills.slice(0,4).map(s => (
+                      <div className="tskill-row" key={s.name}>
+                        <div className="tskill-left">{s.name}</div>
+                        <div className="tskill-bar">
+                          <div className="tskill-fill" style={{ width: `${s.level}%` }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="skills-column">
+                    <h4 className="skills-heading">Backend & Tools</h4>
+                    {technicalSkills.slice(4).map(s => (
+                      <div className="tskill-row" key={s.name}>
+                        <div className="tskill-left">{s.name}</div>
+                        <div className="tskill-bar">
+                          <div className="tskill-fill" style={{ width: `${s.level}%` }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Soft skills view — show percentages next to skill label */}
+              {skillSub === "soft" && (
+                <div className="skills-grid-2col">
+                  <div className="skills-column">
+                    {softSkills.slice(0, Math.ceil(softSkills.length / 2)).map(s => (
+                      <div className="sskill-row" key={s.name}>
+                        <div className="sskill-meta">
+                          <div className="sskill-name">{s.name}</div>
+                          <div className="sskill-num">{s.level}%</div>
+                        </div>
+                        <div className="sskill-bar"><div className="sskill-fill" style={{ width: `${s.level}%` }} /></div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="skills-column">
+                    {softSkills.slice(Math.ceil(softSkills.length / 2)).map(s => (
+                      <div className="sskill-row" key={s.name}>
+                        <div className="sskill-meta">
+                          <div className="sskill-name">{s.name}</div>
+                          <div className="sskill-num">{s.level}%</div>
+                        </div>
+                        <div className="sskill-bar"><div className="sskill-fill" style={{ width: `${s.level}%` }} /></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* EXPERIENCE */}
           {active === "exp" && (
             <div>
               <h3 className="panel-title">Work Experience</h3>
               <div className="exp-timeline">
-                {experience.map((job, i) => (
+                {/* same as earlier */}
+                <div className="exp-item">
+                  <div className="exp-left">Nov 2024 – Jan 2025</div>
+                  <div className="exp-right">
+                    <div className="exp-title">Contract Software Engineer</div>
+                    <div className="exp-company">Sensoft Technologies</div>
+                    <p className="exp-desc">Short-term contract focusing on software engineering tasks and project delivery.</p>
+                  </div>
+                </div>
+
+                { /* map the rest */ }
+                {[
+                  {
+                    title: "IT Infrastructure Intern",
+                    company: "UOB KayHian Securities (Penang)",
+                    period: "Jun 2024 – Aug 2024",
+                    description: "IT support and infrastructure tasks during internship.",
+                  },
+                  {
+                    title: "Indoor Rock-Climbing Instructor (Part-time)",
+                    company: "HangOut Climbing Gym",
+                    period: "2019 – 2024",
+                    description: "Coaching, safety and customer experience at the climbing gym.",
+                  },
+                ].map((job, i) => (
                   <div className="exp-item" key={i}>
                     <div className="exp-left">{job.period}</div>
                     <div className="exp-right">
@@ -312,7 +327,6 @@ const taylorsCells: Cell[] = makeFour(taylorsRoles);
         </div>
       </div>
 
-      {/* Modal */}
       {modalOpen && (
         <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label={modalTitle}>
           <div className="modal">

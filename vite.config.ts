@@ -1,7 +1,8 @@
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
+  base: process.env.NODE_ENV === "production" ? "/Portfolio/" : "/",
   plugins: [react()],
-  base: "/Portfolio/", // 👈 replace with your actual repo name
 });

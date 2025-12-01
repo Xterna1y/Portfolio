@@ -94,7 +94,7 @@ const Hero: React.FC = () => {
 
           <motion.p className="hero-description" variants={fadeInUp}>
             Passionate about creating beautiful, functional web applications that solve real-world problems.
-            Specializing in modern JavaScript frameworks and responsive design.
+            Specializing in modern Typescript frameworks and responsive design.
           </motion.p>
 
           <motion.div className="hero-buttons" variants={fadeInUp}>

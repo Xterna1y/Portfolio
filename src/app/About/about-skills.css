@@ -1,0 +1,112 @@
+/* about-skills.css
+   Styles used by the new Skills panel in About.
+   Merge into about.css if you prefer a single stylesheet.
+*/
+
+.skills-panel-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:18px;
+}
+.panel-title { font-size:1.25rem; font-weight:700; margin:0; }
+.skills-subtabs { display:flex; gap:10px; }
+
+.subtab {
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid rgba(15,23,42,0.06);
+  background:white;
+  cursor:pointer;
+  font-weight:600;
+}
+.subtab.active {
+  background:#0b63e8;
+  color:white;
+  box-shadow:0 10px 30px rgba(11,99,232,0.08);
+}
+
+/* grid */
+.skills-grid-2col {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+/* column heading */
+.skills-column { background:transparent; border-radius:10px; padding:6px 0; }
+.skills-heading { font-weight:700; margin:8px 0 12px; color:#07122a; }
+
+/* Technical skill row: label on left, bar below in single row (no percentage shown) */
+.tskill-row {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-bottom:12px;
+}
+.tskill-left {
+  font-weight:600;
+  color:#0f1724;
+  font-size:14px;
+}
+
+/* bar container */
+.tskill-bar {
+  width:100%;
+  height:12px;
+  background:#eef2ff;
+  border-radius:999px;
+  overflow:hidden;
+  position:relative;
+}
+.tskill-fill {
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg,#0b63e8,#2b6cf6);
+  transition: width 900ms cubic-bezier(.2,.9,.2,1);
+  border-radius:999px;
+}
+
+/* Soft skill row: show name and % on one line, bar below */
+.sskill-row {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-bottom:12px;
+}
+.sskill-meta {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.sskill-name { font-weight:600; color:#0f1724; }
+.sskill-num { font-weight:700; color:#0f1724; }
+
+/* bar */
+.sskill-bar {
+  width:100%;
+  height:12px;
+  background:#f1f5ff;
+  border-radius:999px;
+  overflow:hidden;
+}
+.sskill-fill {
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg,#10b981,#06b6a4);
+  transition: width 900ms cubic-bezier(.2,.9,.2,1);
+  border-radius:999px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .skills-grid-2col { grid-template-columns: 1fr; }
+}
+
+/* small screens */
+@media (max-width: 420px) {
+  .subtab { padding:6px 10px; font-size:13px; }
+  .panel-title { font-size:1.05rem; }
+}

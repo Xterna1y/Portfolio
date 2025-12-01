@@ -35,7 +35,7 @@ const Projects: React.FC = () => {
     {
       id: 2,
       title: "Batuu Customer Portal",
-      description: "Customer portal for Batuu Climbing — login, bookings, and customer account management.",
+      description: "I was part of a project (Frontend) for a customer portal for Batuu Climbing — login, bookings, and customer account management.",
       technologies: ["React", "TypeScript", "Tailwind CSS"],
       liveUrl: "https://online.batuuclimbing.com/login",
       githubUrl: undefined,

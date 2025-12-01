@@ -2,7 +2,7 @@
   "name": "client",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://Xterna1y.github.io/Portfolio",
+  "homepage": "https://Xterna1y.github.io/Portfolio/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
