@@ -51,7 +51,7 @@ export default function SiteLayout() {
             <a className="text-link" href={`mailto:${contactEmail}`}>Let's talk <ArrowUpRight size={14} /></a>
           </div>
         </div>
-        <div className="footer-bottom"><span>© {new Date().getFullYear()} Your Name</span><span>Designed & built with care.</span></div>
+        <div className="footer-bottom"><span>© {new Date().getFullYear()} Tan Ming Reo</span><span>Designed & built with care.</span></div>
       </footer>
     </div>
   );
