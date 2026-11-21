@@ -1,11 +1,38 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const VERCEL_API = 'https://api.vercel.com/v1/query/web-analytics';
+const VERCEL_API =
+  'https://api.vercel.com/v1/query/web-analytics';
 
-async function vercelQuery(
+// ======================================================
+// TYPES
+// ======================================================
+
+type AnalyticsCount = {
+  pageviews: number;
+  visitors: number;
+};
+
+type AnalyticsRow = {
+  timestamp?: string;
+  requestPath?: string;
+  referrerHostname?: string;
+  pageviews: number;
+  visitors: number;
+};
+
+type VercelApiResponse<T> = {
+  data: T;
+};
+
+// ======================================================
+// VERCEL API HELPER
+// ======================================================
+
+async function vercelQuery<T>(
   endpoint: string,
-  params: Record<string, string>
-) {
+  params: Record<string, string>,
+  token: string
+): Promise<T> {
   const url = new URL(`${VERCEL_API}/${endpoint}`);
 
   Object.entries(params).forEach(([key, value]) => {
@@ -13,46 +40,81 @@ async function vercelQuery(
   });
 
   const response = await fetch(url, {
+    method: 'GET',
     headers: {
-      Authorization: `Bearer ${process.env.VERCEL_TOKEN}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 
   if (!response.ok) {
     const message = await response.text();
-    throw new Error(`Vercel API error: ${message}`);
+
+    console.error(
+      `Vercel API error (${response.status}):`,
+      message
+    );
+
+    throw new Error(
+      `Vercel analytics request failed (${response.status}).`
+    );
   }
 
-  return response.json();
+  const result =
+    (await response.json()) as VercelApiResponse<T>;
+
+  return result.data;
 }
+
+// ======================================================
+// MALAYSIA TIME HELPER
+// ======================================================
+
+function getMalaysiaMidnightUTC(): Date {
+  const now = new Date();
+
+  // Convert current time to Malaysia time (UTC+8).
+  const malaysiaTime = new Date(
+    now.getTime() + 8 * 60 * 60 * 1000
+  );
+
+  // Calculate Malaysia midnight, expressed in UTC.
+  return new Date(
+    Date.UTC(
+      malaysiaTime.getUTCFullYear(),
+      malaysiaTime.getUTCMonth(),
+      malaysiaTime.getUTCDate()
+    ) - 8 * 60 * 60 * 1000
+  );
+}
+
+// ======================================================
+// API HANDLER
+// ======================================================
 
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
+  res.setHeader('Cache-Control', 'private, no-store');
+
   if (req.method !== 'GET') {
     return res.status(405).json({
-      error: 'Method not allowed',
+      error: 'Method not allowed.',
     });
   }
 
   try {
-    const token = req.headers.authorization?.replace(
-      /^Bearer\s+/i,
-      ''
-    );
-
-    if (!token) {
-      return res.status(401).json({
-        error: 'Authentication required',
-      });
-    }
+    // --------------------------------------------------
+    // 1. ENVIRONMENT VARIABLES
+    // --------------------------------------------------
 
     const supabaseUrl = process.env.VITE_SUPABASE_URL;
+
     const supabaseKey =
       process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
     const vercelToken = process.env.VERCEL_TOKEN;
+
     const projectId = process.env.VERCEL_PROJECT_ID;
 
     if (
@@ -61,77 +123,139 @@ export default async function handler(
       !vercelToken ||
       !projectId
     ) {
+      console.error(
+        'Missing analytics environment variables.'
+      );
+
       return res.status(500).json({
-        error: 'Missing server configuration',
+        error: 'Analytics service is not configured.',
       });
     }
 
-    // Verify the Supabase session.
+    // --------------------------------------------------
+    // 2. AUTHENTICATION
+    // --------------------------------------------------
+
+    const authorization =
+      req.headers.authorization;
+
+    if (
+      typeof authorization !== 'string' ||
+      !authorization.startsWith('Bearer ')
+    ) {
+      return res.status(401).json({
+        error: 'Authentication required.',
+      });
+    }
+
+    const accessToken = authorization.slice(7).trim();
+
+    if (!accessToken) {
+      return res.status(401).json({
+        error: 'Authentication required.',
+      });
+    }
+
     const userResponse = await fetch(
       `${supabaseUrl}/auth/v1/user`,
       {
         headers: {
           apikey: supabaseKey,
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
 
     if (!userResponse.ok) {
       return res.status(401).json({
-        error: 'Invalid authentication session',
+        error: 'Your session is invalid or expired.',
       });
     }
 
     const user = await userResponse.json();
 
-    // Verify administrator privileges.
+    if (!user?.id) {
+      return res.status(401).json({
+        error: 'Could not identify authenticated user.',
+      });
+    }
+
+    // --------------------------------------------------
+    // 3. ADMINISTRATOR VERIFICATION
+    // --------------------------------------------------
+
     const profileUrl = new URL(
       `${supabaseUrl}/rest/v1/admin_profiles`
     );
 
-    profileUrl.searchParams.set('id', `eq.${user.id}`);
-    profileUrl.searchParams.set('role', 'eq.admin');
-    profileUrl.searchParams.set('select', 'id');
+    profileUrl.searchParams.set(
+      'id',
+      `eq.${user.id}`
+    );
+
+    profileUrl.searchParams.set(
+      'role',
+      'eq.admin'
+    );
+
+    profileUrl.searchParams.set(
+      'select',
+      'id'
+    );
 
     const profileResponse = await fetch(profileUrl, {
       headers: {
         apikey: supabaseKey,
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
     if (!profileResponse.ok) {
+      console.error(
+        'Administrator profile verification failed:',
+        profileResponse.status
+      );
+
       return res.status(403).json({
-        error: 'Could not verify administrator access',
+        error: 'Could not verify administrator access.',
       });
     }
 
     const profiles = await profileResponse.json();
 
-    if (!profiles.length) {
+    if (
+      !Array.isArray(profiles) ||
+      profiles.length === 0
+    ) {
       return res.status(403).json({
-        error: 'Administrator access required',
+        error: 'Administrator access required.',
       });
     }
 
-    // Use the last 30 days.
+    // --------------------------------------------------
+    // 4. DATE RANGES
+    // --------------------------------------------------
+
     const now = new Date();
 
+    // Rolling 30-day reporting period.
     const since = new Date(
       now.getTime() - 29 * 24 * 60 * 60 * 1000
     );
 
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
+    // Malaysia-local start of today.
+    const today = getMalaysiaMidnightUTC();
 
-    const common = {
+    const commonParams = {
       projectId,
       since: since.toISOString(),
       until: now.toISOString(),
     };
 
-    // Retrieve analytics in parallel.
+    // --------------------------------------------------
+    // 5. FETCH VERCEL ANALYTICS
+    // --------------------------------------------------
+
     const [
       totals,
       todayTotals,
@@ -139,53 +263,92 @@ export default async function handler(
       topPages,
       topReferrers,
     ] = await Promise.all([
-      vercelQuery('visits/count', common),
+      // Total visitors and page views.
+      vercelQuery<AnalyticsCount>(
+        'visits/count',
+        commonParams,
+        vercelToken
+      ),
 
-      vercelQuery('visits/count', {
-        ...common,
-        since: today.toISOString(),
-      }),
+      // Today's visitors and page views.
+      vercelQuery<AnalyticsCount>(
+        'visits/count',
+        {
+          projectId,
+          since: today.toISOString(),
+          until: now.toISOString(),
+        },
+        vercelToken
+      ),
 
-      vercelQuery('visits/aggregate', {
-        ...common,
-        by: 'day',
-        limit: '30',
-      }),
+      // Daily visitor activity.
+      vercelQuery<AnalyticsRow[]>(
+        'visits/aggregate',
+        {
+          ...commonParams,
+          by: 'day',
+          limit: '30',
+        },
+        vercelToken
+      ),
 
-      vercelQuery('visits/aggregate', {
-        ...common,
-        by: 'requestPath',
-        limit: '5',
-      }),
+      // Most visited pages.
+      vercelQuery<AnalyticsRow[]>(
+        'visits/aggregate',
+        {
+          ...commonParams,
+          by: 'requestPath',
+          limit: '5',
+        },
+        vercelToken
+      ),
 
-      vercelQuery('visits/aggregate', {
-        ...common,
-        by: 'referrerHostname',
-        limit: '5',
-      }),
+      // Top referral sources.
+      vercelQuery<AnalyticsRow[]>(
+        'visits/aggregate',
+        {
+          ...commonParams,
+          by: 'referrerHostname',
+          limit: '5',
+        },
+        vercelToken
+      ),
     ]);
 
+    // --------------------------------------------------
+    // 6. RETURN RESULTS
+    // --------------------------------------------------
+
     return res.status(200).json({
-      period: '30 days',
+      period: 'Last 30 days',
 
-      totals: totals.data,
+      totals: {
+        visitors: totals?.visitors ?? 0,
+        pageviews: totals?.pageviews ?? 0,
+      },
 
-      today: todayTotals.data,
+      today: {
+        visitors: todayTotals?.visitors ?? 0,
+        pageviews: todayTotals?.pageviews ?? 0,
+      },
 
-      dailyTraffic: dailyTraffic.data ?? [],
+      dailyTraffic: dailyTraffic ?? [],
 
-      topPages: topPages.data ?? [],
+      topPages: topPages ?? [],
 
-      topReferrers: topReferrers.data ?? [],
+      topReferrers: topReferrers ?? [],
+
+      updatedAt: now.toISOString(),
     });
+
   } catch (error) {
-    console.error('Analytics API error:', error);
+    console.error(
+      'Analytics endpoint error:',
+      error
+    );
 
     return res.status(500).json({
-      error:
-        error instanceof Error
-          ? error.message
-          : 'Could not retrieve analytics',
+      error: 'Unable to retrieve website analytics.',
     });
   }
 }
